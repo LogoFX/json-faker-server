@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "Launch Chrome",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome",
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${webRoot}/*",
+        "webpack:///src/*": "${webRoot}/*",
+        "webpack:///./~/": "${webRoot}/node_modules/*"
+      },
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "firefox",
+      "request": "launch",
+      "reAttach": true,
+      "name": "Launch localhost",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/apps/bama-base",
+      "pathMappings": [
+        {
+          "url": "webpack:///src",
+          "path": "${webRoot}/src"
+        },
+      ]
+    },
+    {
+      "name": "vscode-jest-tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/@angular/cli/bin/ng",
+      "args": [
+        "test",
+        "bama-base",
+        "--codeCoverage=true"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole"
+    },
+    {
+      "name": "Debug Node App",
+      "type": "node",
+      "request": "attach",
+      "port": 7777
+    }
+  ]
+}
