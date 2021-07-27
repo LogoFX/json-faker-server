@@ -1,10 +1,14 @@
 import fs from 'fs';
 import lowdb from 'lowdb';
 import * as http from 'http';
-import jsonServer from "json-server";
+import jsonServer, { MiddlewaresOptions } from "json-server";
 import { ServerConfig } from './server-config';
 import { Request, Response, NextFunction, Application } from 'express';
 import Memory from "lowdb/adapters/Memory";
+import path from 'path';
+
+const pause = require('connect-pause');
+
 
 export class JsonServer {
     private _server?: http.Server;
@@ -12,6 +16,10 @@ export class JsonServer {
     private _sourceDb?: lowdb.LowdbSync<any>;
 
     constructor(private _sourceFile: string, private _config: ServerConfig) {
+        if (this._config.routes) {
+            this._routes = fs.readFileSync(this._config.routes, "utf-8")
+        }
+
         if (this._config.watch) {
             const adapter = new Memory("");
             this._sourceDb = lowdb(adapter);
@@ -37,10 +45,34 @@ export class JsonServer {
         
         const router = jsonServer.router(source);
         app.use(jsonServer.bodyParser);
-        const defaults = jsonServer.defaults();
+
+        const defaultsOpts: MiddlewaresOptions = {
+            logger: !this._config.quiet,
+            readOnly: this._config.readOnly,
+            noCors: this._config.noCors,
+            noGzip: this._config.noGzip,
+            bodyParser: true
+          };
+
+        if (this._config.static) {
+            defaultsOpts.static = path.join(process.cwd(), this._config.static);
+        }          
+
+        const defaults = jsonServer.defaults(defaultsOpts);
         app.use(defaults);
 
-        // app.use(jsonServer.rewriter(this._routes));
+        if (this._routes) {
+            const rewriter = jsonServer.rewriter(this._routes);
+            app.use(rewriter);
+        }
+
+        if (this._config.middlewares) {
+            app.use(this._config.middlewares);
+        }        
+
+        if (this._config.delay) {
+            app.use(pause(this._config.delay));
+        }
 
         app.use(router);
         const port = this._config.port;

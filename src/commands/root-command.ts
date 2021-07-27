@@ -1,5 +1,4 @@
-import { autoinject } from 'aurelia-dependency-injection';
-import { singleton } from 'aurelia-dependency-injection';
+import { autoinject, singleton } from 'aurelia-dependency-injection';
 import { Command } from "commander";
 import { JsonServer } from '../server';
 import { ServerConfig } from '../server/server-config';
@@ -13,9 +12,12 @@ export class RootCommand extends Command {
     this
       .version(require('../../package.json').version)
       .description('json-faker-server [options] <source>')
-      .option("-c, --config <config file>", "Path to config file")
-      .option("-p, --port <port number>", "Set port")
+      .option("-c, --config [config file]", "Path to config file")
+      .option("-p, --port [port number]", "Set port")
+      .option("-H, --host [host]", "Set host")
       .option("-w, --watch", "Watch file(s)")
+      .option("-r, --routes [routes]", "Path to routes file")
+      .option("-m, --middlewares [middlewares...]", "Paths to middleware files")
       .arguments('<source>')
       .action(this.run);
 
@@ -38,9 +40,16 @@ export class RootCommand extends Command {
       config.port = options.port;
     }
 
+    if (options.host) {
+      config.host = options.host;
+    }
+
     if (options.watch) {
       config.watch =  options.watch;
     }
+
+    config.routes =  options.routes;
+    config.middlewares = options.middlewares;
 
     const jsonServer = new JsonServer(source, config);
     jsonServer.start();
