@@ -1,4 +1,6 @@
 export class ServerConfig
 {
-    public Source?: string;
+    public watch: boolean = false;
+
+    public port: number = 3000;
 }
