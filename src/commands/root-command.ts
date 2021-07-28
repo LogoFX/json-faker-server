@@ -18,6 +18,14 @@ export class RootCommand extends Command {
       .option("-w, --watch", "Watch file(s)")
       .option("-r, --routes [routes]", "Path to routes file")
       .option("-m, --middlewares [middlewares...]", "Paths to middleware files")
+      .option("-s, --static [directory]", "Set static files directory")
+      .option("-ro, --read-only", "Allow only GET requests")
+      .option("-nc, --no-cors", "Disable Cross-Origin Resource Sharing")
+      .option("-ng, --no-gzip", "Disable GZIP Content-Encoding")
+      .option("-S, --snapshots [directory]", "Set snapshots directory")
+      .option("-d, --delay [pause]", "Add delay to responses (ms)")
+      .option("-i, --id [key]", "Set database id property (e.g. _id)")
+      .option("-q, --quiet", "Suppress log messages from output")
       .arguments('<source>')
       .action(this.run);
 
@@ -48,8 +56,20 @@ export class RootCommand extends Command {
       config.watch =  options.watch;
     }
 
+    if (options.snapshots) {
+      config.snapshots = options.snapshots;
+    }
+
+    if (options.id) {
+      config.id = options.id;
+    }
+
     config.routes =  options.routes;
     config.middlewares = options.middlewares;
+    config.static = options.static;
+    config.readOnly = options.readOnly;
+    config.delay = options.delay;
+    config.quiet = options.quiet;
 
     const jsonServer = new JsonServer(source, config);
     jsonServer.start();

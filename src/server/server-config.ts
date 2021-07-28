@@ -12,4 +12,6 @@ export class ServerConfig
     public noGzip: boolean = false;
     public static?: string;
     public delay?: number;
+    public snapshots: string = ".";
+    public id: string = "id";
 }
