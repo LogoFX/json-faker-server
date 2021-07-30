@@ -13,5 +13,6 @@ export class ServerConfig
     public static?: string;
     public delay?: number;
     public snapshots: string = ".";
-    public id: string = "id";
+    public id: string = "id";    
+    public foreignKeySuffix: string = "Id";
 }

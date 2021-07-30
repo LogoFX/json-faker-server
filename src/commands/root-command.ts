@@ -25,6 +25,7 @@ export class RootCommand extends Command {
       .option("-S, --snapshots [directory]", "Set snapshots directory")
       .option("-d, --delay [pause]", "Add delay to responses (ms)")
       .option("-i, --id [key]", "Set database id property (e.g. _id)")
+      .option("-fsk, --foreignKeySuffix [key]", "Set foreign key suffix (e.g. _id as in post_id)")
       .option("-q, --quiet", "Suppress log messages from output")
       .arguments('<source>')
       .action(this.run);
